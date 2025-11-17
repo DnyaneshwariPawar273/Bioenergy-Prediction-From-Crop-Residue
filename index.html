@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bioenergy Predictor</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body class="container mt-4">
+
+<h2 class="text-center mb-4">🔋 Bioenergy Potential Predictor</h2>
+
+<form method="POST" class="card p-4">
+
+    <label class="form-label">Crop Type:</label>
+    <select name="crop" class="form-select">
+        {% for c in crops %}
+        <option value="{{c}}">{{c}}</option>
+        {% endfor %}
+    </select>
+
+    <label class="form-label mt-3">Yield (t/ha):</label>
+    <input class="form-control" type="number" step="0.1" name="yield_val" required>
+
+    <div class="mt-3">
+        <input type="checkbox" name="use_opt"> Enter Optional Parameters
+    </div>
+
+    <div class="border rounded p-3 mt-2">
+        <label class="form-label">Residue-to-Product Ratio:</label>
+        <input class="form-control" name="rpr" step="0.01">
+
+        <label class="form-label mt-2">Residue Quantity (t):</label>
+        <input class="form-control" name="residue_t" step="0.01">
+
+        <label class="form-label mt-2">Moisture (%) :</label>
+        <input class="form-control" name="moisture" step="0.1">
+
+        <label class="form-label mt-2">Calorific Value (MJ/kg):</label>
+        <input class="form-control" name="cv" step="0.1">
+    </div>
+
+    <button class="btn btn-primary mt-4" type="submit">Predict</button>
+
+</form>
+
+
+{% if prediction %}
+<div class="alert alert-success mt-4">
+    <h4>Predicted Bioenergy:</h4>
+
+<pre style="font-size:18px; font-weight:600;">
+
+{{ prediction.text }}
+
+{% if user_inputs_used %}
+User Inputs:
+{% for k,v in user_inputs_used.items() %}
+  {{ k }} = {{ v }}{% if k == 'Moisture_%' %}%{% endif %}{% if k == 'Calorific_Value_MJ_kg' %} MJ/kg{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if defaults_used %}
+Defaults Used:
+{% for k,v in defaults_used.items() %}
+  {{ k }} = {{ v }}{% if k == 'Moisture_%' %}%{% endif %}{% if k == 'Calorific_Value_MJ_kg' %} MJ/kg{% endif %}
+{% endfor %}
+{% endif %}
+
+</pre>
+</div>
+{% endif %}
+
+
+{% if error %}
+<div class="alert alert-danger mt-4">
+    ❌ {{ error }}
+</div>
+{% endif %}
+
+</body>
+</html>
